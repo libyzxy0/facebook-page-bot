@@ -3,7 +3,7 @@ import { fontText } from '@/utils/fonts'
 
 export const config = {
   name: 'Shoti',
-  description: 'This command is sending random beautiful girl videos from Shoti API.',
+  description: 'Random beautiful girl videos from Shoti API.',
   usage: 'shoti',
   category: 'Fun',
   creator: 'libyzxy0'

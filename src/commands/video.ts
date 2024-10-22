@@ -2,7 +2,7 @@ import { Innertube, UniversalCache, Utils } from "youtubei.js";
 
 export const config = {
   name: 'Video',
-  description: 'Command that lets you play any youtube video',
+  description: 'Command that lets you play any youtube video.',
   usage: 'Video [title]',
   category: 'General',
   creator: 'libyzxy0'
