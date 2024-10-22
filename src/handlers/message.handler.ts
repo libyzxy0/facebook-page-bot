@@ -1,10 +1,31 @@
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
-
+import { listenKeiAI } from '@/DefaultAI'
 import {
   PAGE_ACCESS_TOKEN
 } from '@/credentials'
+
+export const setTypingIndicator = async (senderId, isTyping) => {
+  const url = `https://graph.facebook.com/v13.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`;
+
+  const payload = {
+    recipient: {
+      id: senderId,
+    },
+    sender_action: isTyping ? 'typing_on' : 'typing_off',
+  };
+
+  try {
+    await axios.post(url, payload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+    console.error('Error sending typing indicator:', error.response.data);
+  }
+};
 
 export async function sendMessage(message, senderId) {
   if (!message || (!message.text && !message.attachment)) {
@@ -33,7 +54,6 @@ export async function sendMessage(message, senderId) {
         access_token: PAGE_ACCESS_TOKEN
       }
     });
-    console.log('Message sent successfully:', response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -45,6 +65,11 @@ export async function sendMessage(message, senderId) {
   }
 }
 
+const apiFunctions = {
+  setTypingIndicator, 
+  sendMessage
+}
+
 export async function handleMessage(event) {
   const senderId = event.sender.id;
   const messageText = event.message.text.toLowerCase();
@@ -52,7 +77,6 @@ export async function handleMessage(event) {
   const args = messageText.split(' ');
   const commandName = args.shift();
 
-  console.log(commandName)
   if (commandName) {
     try {
       let {
@@ -60,15 +84,15 @@ export async function handleMessage(event) {
       } = await import(`../commands/${commandName}`);
         execute({
           event: event, 
-          api: {
-            sendMessage
-          }
+          api: apiFunctions
         });
       } catch (error) {
-        console.error(`Error executing command ${commandName}:`, error);
-        await sendMessage( {
-          text: 'There was an error executing that command.'
-        }, senderId);
+        if (error.code == "ERR_MODULE_NOT_FOUND") {
+          const api = apiFunctions;
+          listenKeiAI(event.message.text, event.sender.id, api, event);
+        } else {
+          sendMessage({ text: "Failed to execute command, something went wrong." })
+        }
       }
     }
   }

@@ -35,7 +35,7 @@ Before starting, ensure you have a Facebook Page. If you don't have one, create 
    - Click on "Setup Webhooks".
    - Enter the following details:
      - **Callback URL:** `https://your_hosting.site/webhook`
-     - **Verify Token:** `pagebot`
+     - **Verify Token:** depending on what value you set in environment variable `VERIFY_TOKEN`
    - Subscribe to the following fields:
      - `messages`
      - `messaging_optins`
@@ -54,7 +54,7 @@ Before starting, ensure you have a Facebook Page. If you don't have one, create 
 
 ## Step 8: Enter Page Access Token
 1. **Configure Bot with Token:**
-   - Paste the Page Access Token into `token.txt`.
+   - Paste the Page Access Token into environment variables `PAGE_ACCESS_TOKEN`.
 
 ## Step 9: Test Your Messenger Bot
 1. **Test Bot Functionality:**

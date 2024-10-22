@@ -1,9 +1,10 @@
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import { fontText } from '@/utils/fonts'
 
 export const config = {
-  name: 'help',
+  name: 'Help',
   description: 'Sends all available commands in this bot.',
   usage: 'help',
   category: 'General',
@@ -12,26 +13,25 @@ export const config = {
 
 export async function execute({ api, event }) {
   try {
+    api.setTypingIndicator(event.sender.id, true);
     const commandsDir = path.join(new URL('../commands', import.meta.url).pathname);
     const commandFiles = fs.readdirSync(commandsDir).filter(file => file.endsWith('.ts'));
 
-    // Fetch font variations for each command name using the font API
     const commands = await Promise.all(commandFiles.map(async (file) => {
       const command = await import(path.join(commandsDir, file));
 
-      const fontResponse = await axios.get(`https://joshweb.click/api/font?q=${encodeURIComponent(command.config.name.toUpperCase())}`);
-      const fontResult = fontResponse.data[10]?.result || command.config.name.toUpperCase();
-
-      return `${fontResult}\n   📄 𝗗𝗲𝘀𝗰𝗿𝗶𝗽𝘁𝗶𝗼𝗻: ${command.config.description}\n   📝 𝗨𝘀𝗮𝗴𝗲: ${command.config.usage}\n   🏷️ 𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝘆: ${command.config.category}\n   👤 𝗖𝗿𝗲𝗮𝘁𝗼𝗿: ${command.config.creator}`;
+      return `${fontText(command.config.name.toUpperCase(), "bold")}\n   📄 ${fontText("Description", "boldItalic")}: ${command.config.description}\n   📝 ${fontText("Usage", "boldItalic")}: ${command.config.usage}\n   🏷️ ${fontText("Category", "boldItalic")}: ${command.config.category}\n   👤 ${fontText("Creator", "boldItalic")}: ${command.config.creator}`;
     }));
 
     const totalCommands = commandFiles.length;
-    const helpMessage = `𝗞𝗲𝗶 𝗦𝘆 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀\n𝙷𝚎𝚛𝚎 𝚊𝚛𝚎 𝚝𝚑𝚎 ${totalCommands} 𝚊𝚠𝚎𝚜𝚘𝚖𝚎 𝚌𝚘𝚖𝚖𝚊𝚗𝚍𝚜 𝚝𝚑𝚊𝚝 𝚢𝚘𝚞 𝚌𝚊𝚗 𝚞𝚜𝚎 𝚠𝚒𝚝𝚑 𝙺𝚎𝚒 𝚂𝚢:\n\n${commands.join('\n\n')}`;
+    const helpMessage = `${fontText("Kei Sy Commands", "bold")}\n${fontText(`Here are the ${totalCommands} awesome commands that you can use with Kei Sy`, "sansSerifItalic")}:\n\n${commands.join('\n\n')}\n\n${fontText("Tip", "bold")}: ${fontText("You can also use '/' to show available commands or navigate to Info page and click the action button 'Commands'.", "sansSerifItalic")}`;
 
     await api.sendMessage({
       text: helpMessage
     }, event.sender.id);
   } catch (error) {
     console.error(`Error sending help message: ${error.message}`);
+  } finally {
+    api.setTypingIndicator(event.sender.id, false);
   }
 }
