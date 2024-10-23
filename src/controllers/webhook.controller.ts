@@ -24,6 +24,7 @@ class WebhookController {
         }
       }
     } catch (error) {
+      console.log(error)
       res.status(500).json({
         error: "Something went wrong"
       })
@@ -49,6 +50,7 @@ class WebhookController {
         res.sendStatus(404);
       }
     } catch (error) {
+      console.log(error)
       res.status(500).json({
         error: "Something went wrong"
       })
