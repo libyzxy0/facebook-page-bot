@@ -2,9 +2,20 @@ import { API } from '@/Api'
 
 const api = new API();
 
-export function handlePostback(event) {
+export async function handlePostback(event) {
   const senderId = event.sender.id;
-  const payload = event.postback.payload;
+  const payload = JSON.parse(event.postback.payload);
+  
+  const commandName = payload.commandName;
 
-  api.sendMessage({ text: `You sent a postback with payload: ${payload}` }, senderId);
+  if (commandName) {
+    try {
+      let {
+        handlePostBack
+      } = await import(`../commands/${commandName}`);
+      handlePostBack({ api, event, payload });
+    } catch (error) {
+      console.log('Error executing postback command:', error)
+    }
+  }
 }

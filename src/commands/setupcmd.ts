@@ -13,7 +13,7 @@ export async function execute({
 }) {
   try {
     if(event.sender.id !== "8232207860235773") return api.sendMessage({
-      text: "🚫 You can use this command because you're a user, this is for admin use only."
+      text: "🚫 You cannot use this command."
     }, event.sender.id);
     const isSucces = await setupCmds();
     await api.sendMessage({
