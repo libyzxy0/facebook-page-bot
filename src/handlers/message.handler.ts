@@ -13,7 +13,7 @@ export async function handleMessage(event) {
 
   const args = messageText?.split(' ');
   const commandName = args?.shift();
-  const commandNameMessenger = event.message.commands[0].name.toLowerCase();
+  //const commandNameMessenger = event?.message?.commands[0]?.name?.toLowerCase();
   
   if (commandName) {
     try {
