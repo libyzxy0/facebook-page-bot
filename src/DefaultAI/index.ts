@@ -25,6 +25,6 @@ export const listenKeiAI = async (message, senderId, api, event) => {
         console.log(response.data);
         api.sendMessage({ text: JSON.stringify(response.data) }, senderId)
   } catch (error) {
-    console.error('An error occurred:', error)
+    console.error('An error occurred:', error.message)
   }
 }
