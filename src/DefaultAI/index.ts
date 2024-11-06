@@ -49,7 +49,7 @@ The following commands are available: ${JSON.stringify(commands)}
     const messageChunks = formattedResponse.match(/.{1,2000}/g) || [];
 
     for (const chunk of messageChunks) {
-      await api.sendMessage({ text: chunk.trim() }, senderId);
+      await api.sendMessage({ text: formattedResponse }, senderId);
     }
     await api.sendMessage({ text: messageChunks.length }, senderId);
   } catch (error) {
