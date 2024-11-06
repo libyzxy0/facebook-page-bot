@@ -32,13 +32,15 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
     const { first_name, last_name } = await api.getUserInfo(senderId);
     const convo = await api.getUserConversation(senderId);
 
-    // Format the conversation into "Name | Time: Message"
+    const { id: currentId } = await api.getCurrentUserId();
+    
     const formattedConvo = convo.map((msg: any) => {
-      const name = msg.from.name;
+      const name = currentId == msg.from.id ? "You" : msg.from.name;
       const time = new Date(msg.created_time).toLocaleString();
       const text = msg.message;
       return `${name} | ${time}: ${text}`;
     }).join('\n');
+    
 
     const prompt = `
 START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a playful, human touch. You’re known for being approachable, witty, and a bit flirty or dark-humored when it fits, but always professional for serious topics. 
