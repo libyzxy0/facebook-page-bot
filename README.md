@@ -1,4 +1,5 @@
 # Facebook Page Bot
+A chatbot for facebook page designed for answering questions and entrainment.
 
 ## Prerequisites
 Before starting, ensure you have a Facebook Page. If you don't have one, create a Facebook Page first.
@@ -85,3 +86,20 @@ Before starting, ensure you have a Facebook Page. If you don't have one, create 
    
 6. **Assign Roles to Users:**
    - After defining the role, you can assign it to specific users associated with your app. You may need to provide the user's name or user ID to assign the role.
+   
+# Running 
+Install packages
+```sh
+yarn install
+```
+Run dev server
+```sh
+yarn dev
+```
+
+**Note:** It is better to use ngrok to expose your local server online so you can add it to your webhook and test it locally.
+
+# Deploying
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/fJRmJZ?referralCode=iEZ5cj)
+
+Enjoy! **Happy Coding!** 🎉
