@@ -10,12 +10,6 @@ interface Message {
     username: string;
     id: string;
   };
-  to: {
-    data: Array<{
-      username: string;
-      id: string;
-    }>;
-  };
   message: string;
 }
 
@@ -49,7 +43,7 @@ export class API {
         messages.map(async (msg: { id: string }) => {
           const messageDetailsResponse = await axios.get(`${this.baseUrl}/${msg.id}`, {
             params: {
-              fields: 'id,created_time,from,to,message',
+              fields: 'id,created_time,from,message',
               access_token: PAGE_ACCESS_TOKEN,
             },
           });
