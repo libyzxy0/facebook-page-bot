@@ -33,13 +33,14 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
     const { first_name, last_name } = await api.getUserInfo(senderId);
     const { id: currentId } = await api.getCurrentUserId();
 
+   
     const userMessage = currentId === senderId ? "You" : `${first_name} ${last_name}`;
     const messageEntry = { [userMessage]: message };
 
     if (!conversationLog[senderId]) {
       conversationLog[senderId] = [];
     }
-   
+
     conversationLog[senderId].push(messageEntry);
     if (conversationLog[senderId].length > 5) {
       conversationLog[senderId].shift(); 
@@ -47,6 +48,7 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
 
     console.log("Current conversation log:", conversationLog);
 
+  
     const formattedConvo = conversationLog[senderId]
       .map(msg => {
         const [name, text] = Object.entries(msg)[0];
@@ -54,7 +56,6 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
         return `${name} | ${time}: ${text}`;
       })
       .join('\n');
- 
 
     const prompt = `
 START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a playful, human touch. You’re known for being approachable, witty, and a bit flirty or dark-humored when it fits, but always professional for serious topics. 
@@ -80,15 +81,20 @@ Available commands: ${JSON.stringify(commands)}
 ::HERE'S OUR PREVIOUS CONVERSATION DATA: ${formattedConvo}
 `;
 
+    
     const response = await axios.get(`https://api.kenliejugarap.com/ministral-8b-paid/?question=${encodeURIComponent(prompt)}`);
     const formattedResponse = mdConvert(response.data.response, "bold");
     
+ 
+    conversationLog[senderId].push({ "You": formattedResponse });
+    if (conversationLog[senderId].length > 5) {
+      conversationLog[senderId].shift(); 
+    }
+    
     const messageChunks = formattedResponse.match(/.{1,2000}/g) || [];
-
     for (const chunk of messageChunks) {
       await api.sendMessage({ text: chunk.trim() }, senderId);
     }
-    await api.sendMessage({ text: formattedConvo }, senderId);
   } catch (error) {
     console.error('An error occurred:', error.message);
     api.sendMessage({ text: `Something went wrong! Can't help you right now.\n\n${error.message}` }, senderId);
