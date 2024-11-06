@@ -39,7 +39,7 @@ export class API {
       }
       const messagesResponse = await axios.get(`${this.baseUrl}/${conversationId}`, {
         params: {
-          fields: 'messages.limit(10)',
+          fields: 'messages.limit(5)',
           access_token: PAGE_ACCESS_TOKEN,
         },
       });
