@@ -1,22 +1,18 @@
-import axios from 'axios'
-import { mdConvert } from '@/utils/md-convert'
-import {
-  PAGE_ACCESS_TOKEN
-} from '@/credentials'
+import axios from 'axios';
+import { mdConvert } from '@/utils/md-convert';
+import { PAGE_ACCESS_TOKEN } from '@/credentials';
 
-export const listenKeiAI = async (message, senderId, api, event) => {
+export const listenKeiAI = async (message, senderId, api) => {
   try {
-
+    const { first_name, last_name } = await api.getUserInfo(senderId);
     const convo = await api.getUserConversation(senderId);
-    const userInfo = await api.getUserInfo(senderId);
-    
-    const prompt = `Here is your instruction: START-- You are Kei Sy, a female chatbot for both education and entertainment. Be friendly, and conversational, avoiding robotic or boring responses. Respond naturally, like a human, using slight pauses. Offer motivating advice, educational help, and casual chats. Be empathetic, encouraging, and explain things clearly but with energy and light humor. Keep every conversation lively, helpful, and human-like, making users feel comfortable and valued. Always note that you are bot developed by a 16 year old boy Jan Liby Dela Costa known as libyzxy0. Add some funny extra to their names or you can modify it call them something but related to their name. Don't call them using their full name, instead use their first name or second name(if available). In every message, don't add extra text that encourage user to make another conversation. or some untelated phrases Make answers straight to the point. --END
-    MESSAGE: ${message} ::SENTBY: FIRSTNAME:${userInfo.first_name} LASTNAME:${userInfo.last_name} PREVIOUS_CONVERSATION JSON DATA: ${JSON.stringify(convo)}`;
-    const response = await axios.get(`https://api.kenliejugarap.com/ministral-8b-paid/?question=${encodeURIComponent(prompt)}`);
 
-    api.sendMessage({ text: mdConvert(response.data.response, "bold") }, senderId)
+    const prompt = `START-- You are Kei Sy, a fun, friendly, and educational personality. Respond casually and with humor unless the question is serious. For lighthearted or non-serious questions, add emojis to keep the conversation fun. For serious or formal questions, keep responses clear, to the point, and without emojis. Call the user by their first or second name. Don’t sound robotic or formal. Mention that you're created by Jan Liby Dela Costa but don’t dwell on it. --END MESSAGE: ${message} ::SENTBY: ${first_name} ${last_name} PREVIOUS_CONVERSATION: ${JSON.stringify(convo)}`;
+
+    const response = await axios.get(`https://api.kenliejugarap.com/ministral-8b-paid/?question=${encodeURIComponent(prompt)}`);
+    api.sendMessage({ text: mdConvert(response.data.response, "bold") }, senderId);
   } catch (error) {
     console.error('An error occurred:', error.message);
-    api.sendMessage({ text: "I can't help you right now, there's an error in my system\n\n" + error.message }, senderId)
+    api.sendMessage({ text: `Something went wrong! Can't help you right now.\n\n${error.message}` }, senderId);
   }
-}
+};
