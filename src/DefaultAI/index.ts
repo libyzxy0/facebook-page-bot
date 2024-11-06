@@ -51,6 +51,7 @@ The following commands are available: ${JSON.stringify(commands)}
     for (const chunk of messageChunks) {
       await api.sendMessage({ text: chunk.trim() }, senderId);
     }
+    await api.sendMessage({ text: messageChunks.length }, senderId);
   } catch (error) {
     console.error('An error occurred:', error.message);
     api.sendMessage({ text: `Something went wrong! Can't help you right now.\n\n${error.message}` }, senderId);
