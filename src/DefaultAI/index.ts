@@ -9,8 +9,7 @@ async function initializeCommands() {
 
   const commands = [];
   try {
-    // Attempt to dynamically import command files
-    const importedCommands = await Promise.all(commandFiles.map(async (file) => {
+      const importedCommands = await Promise.all(commandFiles.map(async (file) => {
       const { config } = await import(path.join(commandsDir, file));
       return {
         name: config.name,
@@ -20,7 +19,6 @@ async function initializeCommands() {
     commands.push(...importedCommands);
   } catch (error) {
     console.error('Failed to load commands:', error.message);
-    // Push empty array if there is an error
     commands.push(...[]);
   }
   return commands;
