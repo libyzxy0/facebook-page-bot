@@ -16,6 +16,6 @@ export const listenKeiAI = async (message, senderId, api) => {
     console.error('An error occurred:', error.message);
     api.sendMessage({ text: `Something went wrong! Can't help you right now.\n\n${error.message}` }, senderId);
   } finally {
-    api.setTypingIndicator(senderId, true);
+    api.setTypingIndicator(senderId, false);
   }
 };
