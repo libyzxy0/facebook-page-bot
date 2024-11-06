@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { mdConvert } from '@/utils/md-convert'
 import {
   PAGE_ACCESS_TOKEN
 } from '@/credentials'
@@ -13,7 +14,7 @@ export const listenKeiAI = async (message, senderId, api, event) => {
     MESSAGE: ${message} ::SENTBY: FIRSTNAME:${userInfo.first_name} LASTNAME:${userInfo.last_name}`;
         const response = await axios.get(`https://api.kenliejugarap.com/ministral-8b-paid/?question=${encodeURIComponent(prompt)}`);
 
-        api.sendMessage({ text: response.data.response }, senderId)
+        api.sendMessage({ text: mdConvert(response.data.response, "bold") }, senderId)
   } catch (error) {
     console.error('An error occurred:', error.message)
   }
