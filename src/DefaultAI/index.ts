@@ -31,7 +31,15 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
     api.setTypingIndicator(senderId, true);
     const { first_name, last_name } = await api.getUserInfo(senderId);
     const convo = await api.getUserConversation(senderId);
-    console.log("Previous conversations:", JSON.stringify(convo));
+
+    // Format the conversation into "Name | Time: Message"
+    const formattedConvo = convo.map((msg: any) => {
+      const name = msg.from.name;
+      const time = new Date(msg.created_time).toLocaleString();
+      const text = msg.message;
+      return `${name} | ${time}: ${text}`;
+    }).join('\n');
+
     const prompt = `
 START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a playful, human touch. You’re known for being approachable, witty, and a bit flirty or dark-humored when it fits, but always professional for serious topics. 
 
@@ -53,9 +61,8 @@ Available commands: ${JSON.stringify(commands)}
 
 --END | ::USER_INPUT: ${message} 
 ::SENT_BY: ${first_name} ${last_name} 
-::PREVIOUS_CONVERSATION: ${convo.length > 0 ? convo[convo.length - 1].text : "No previous conversation"}
+::PREVIOUS_CONVERSATION: ${formattedConvo}
 `;
-
 
     const response = await axios.get(`https://api.kenliejugarap.com/ministral-8b-paid/?question=${encodeURIComponent(prompt)}`);
     const formattedResponse = mdConvert(response.data.response, "bold");
