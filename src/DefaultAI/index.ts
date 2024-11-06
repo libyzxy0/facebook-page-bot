@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 async function initializeCommands() {
-  const commandsDir = path.resolve(__dirname, 'commands');
+  const commandsDir = path.resolve(__dirname, '../commands');
   const commandFiles = fs.readdirSync(commandsDir);
 
   const commands = [];
