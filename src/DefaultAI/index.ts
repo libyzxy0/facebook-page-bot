@@ -31,7 +31,7 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
     api.setTypingIndicator(senderId, true);
     const { first_name, last_name } = await api.getUserInfo(senderId);
     const convo = await api.getUserConversation(senderId);
-    
+    console.log("Previous conversations:", JSON.stringify(convo));
     const prompt = `
 START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a playful, human touch. You’re known for being approachable, witty, and a bit flirty or dark-humored when it fits, but always professional for serious topics. 
 
