@@ -3,6 +3,8 @@ import { mdConvert } from '@/utils/md-convert';
 import fs from 'fs';
 import path from 'path';
 
+const conversationLog: { [key: string]: { [key: string]: string }[] } = {};
+
 async function initializeCommands() {
   const commandsDir = path.resolve(__dirname, '../commands');
   const commandFiles = fs.readdirSync(commandsDir);
@@ -19,7 +21,6 @@ async function initializeCommands() {
     commands.push(...importedCommands);
   } catch (error) {
     console.error('Failed to load commands:', error.message);
-    commands.push(...[]);
   }
   return commands;
 }
@@ -30,17 +31,30 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
   try {
     api.setTypingIndicator(senderId, true);
     const { first_name, last_name } = await api.getUserInfo(senderId);
-    const convo = await api.getUserConversation(senderId);
-
     const { id: currentId } = await api.getCurrentUserId();
-    
-    const formattedConvo = convo.map((msg: any) => {
-      const name = currentId == msg.from.id ? "You" : msg.from.name;
-      const time = new Date(msg.created_time).toLocaleString();
-      const text = msg.message;
-      return `${name} | ${time}: ${text}`;
-    }).join('\n');
-    console.log(formattedConvo)
+
+    const userMessage = currentId === senderId ? "You" : `${first_name} ${last_name}`;
+    const messageEntry = { [userMessage]: message };
+
+    if (!conversationLog[senderId]) {
+      conversationLog[senderId] = [];
+    }
+   
+    conversationLog[senderId].push(messageEntry);
+    if (conversationLog[senderId].length > 5) {
+      conversationLog[senderId].shift(); 
+    }
+
+    console.log("Current conversation log:", conversationLog);
+
+    const formattedConvo = conversationLog[senderId]
+      .map(msg => {
+        const [name, text] = Object.entries(msg)[0];
+        const time = new Date().toLocaleString();
+        return `${name} | ${time}: ${text}`;
+      })
+      .join('\n');
+ 
 
     const prompt = `
 START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a playful, human touch. You’re known for being approachable, witty, and a bit flirty or dark-humored when it fits, but always professional for serious topics. 
@@ -74,6 +88,7 @@ Available commands: ${JSON.stringify(commands)}
     for (const chunk of messageChunks) {
       await api.sendMessage({ text: chunk.trim() }, senderId);
     }
+    await api.sendMessage({ text: formattedConvo }, senderId);
   } catch (error) {
     console.error('An error occurred:', error.message);
     api.sendMessage({ text: `Something went wrong! Can't help you right now.\n\n${error.message}` }, senderId);
