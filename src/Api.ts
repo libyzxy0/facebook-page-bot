@@ -3,9 +3,65 @@ import {
 } from '@/credentials'
 import axios from 'axios';
 
+interface Message {
+  id: string;
+  created_time: string;
+  from: {
+    username: string;
+    id: string;
+  };
+  to: {
+    data: Array<{
+      username: string;
+      id: string;
+    }>;
+  };
+  message: string;
+}
+
 export class API {
   constructor() {
     this.baseUrl = "https://graph.facebook.com/v13.0";
+  }
+
+  async getUserConversation(userId: string): Promise<Message[]> {
+    try {
+      const conversationResponse = await axios.get(`${this.baseUrl}/me/conversations`, {
+        params: {
+          user_id: userId,
+          access_token: PAGE_ACCESS_TOKEN,
+        },
+      });
+
+      const conversationId = conversationResponse.data?.data?.[0]?.id;
+      if (!conversationId) {
+        throw new Error("No conversation found for the given user.");
+      }
+      const messagesResponse = await axios.get(`${this.baseUrl}/${conversationId}`, {
+        params: {
+          fields: 'messages.limit(10)',
+          access_token: PAGE_ACCESS_TOKEN,
+        },
+      });
+
+      const messages = messagesResponse.data?.messages?.data || [];
+      const detailedMessages = await Promise.all(
+        messages.map(async (msg: { id: string }) => {
+          const messageDetailsResponse = await axios.get(`${this.baseUrl}/${msg.id}`, {
+            params: {
+              fields: 'id,created_time,from,to,message',
+              access_token: PAGE_ACCESS_TOKEN,
+            },
+          });
+          return messageDetailsResponse.data as Message;
+        })
+      );
+
+      return detailedMessages;
+    } catch (error) {
+      console.error('Error fetching user conversation:', error.message);
+      return [];
+    }
   }
 
   async getUserInfo(id: string): Promise < any > {
