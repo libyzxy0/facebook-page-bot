@@ -5,31 +5,24 @@ import path from 'path';
 
 const conversationLog: { [key: string]: { [key: string]: string }[] } = {};
 
-function splitMessages(text: string, chunkSize = 2000) {
+function splitWithCodePreservation(text: string) {
   const chunks = [];
-  const codeBlockRegex = /(```[\s\S]*?```|`[^\`]*`)/g;
-  let lastIndex = 0;
+  const lines = text.split('\n');
+  let codeBlock = false;
+  let currentChunk = '';
 
-  text.replace(codeBlockRegex, (match, _, index) => {
-    let precedingText = text.slice(lastIndex, index);
-    while (precedingText.length > chunkSize) {
-      chunks.push(precedingText.slice(0, chunkSize));
-      precedingText = precedingText.slice(chunkSize);
+  for (const line of lines) {
+    if (line.startsWith('```')) codeBlock = !codeBlock;
+
+    if ((currentChunk.length + line.length + 1) <= 2000 || codeBlock) {
+      currentChunk += (currentChunk ? '\n' : '') + line;
+    } else {
+      chunks.push(currentChunk);
+      currentChunk = line;
     }
-    if (precedingText) chunks.push(precedingText);
-
-    chunks.push(match);
-    lastIndex = index + match.length;
-    return match;
-  });
-
-  let remainingText = text.slice(lastIndex);
-  while (remainingText.length > chunkSize) {
-    chunks.push(remainingText.slice(0, chunkSize));
-    remainingText = remainingText.slice(chunkSize);
   }
-  if (remainingText) chunks.push(remainingText);
 
+  if (currentChunk) chunks.push(currentChunk);
   return chunks;
 }
 
@@ -106,7 +99,7 @@ Available commands: ${JSON.stringify(commands)}
 
     const response = await axios.get(`https://api.kenliejugarap.com/ministral-8b-paid/?question=${encodeURIComponent(prompt)}`);
     const formattedResponse = mdConvert(response.data.response, "bold");
-    const messageChunks = splitMessages(formattedResponse);
+    const messageChunks = splitWithCodePreservation(formattedResponse);
 
     for (const chunk of messageChunks) {
       await api.sendMessage({ text: chunk.trim() }, senderId);
