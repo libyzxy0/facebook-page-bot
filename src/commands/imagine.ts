@@ -1,4 +1,4 @@
-import { fontText } from '@/utils/fonts'
+import axios from 'axios';
 
 export const config = {
   name: 'Imagine',
@@ -26,21 +26,33 @@ export async function execute({
     args.shift();
     api.setTypingIndicator(event.sender.id, true);
 
-    const query = args.join(" ");
+    const queryText = args.join(" ");
     
-    const url = `https://api.kenliejugarap.com/flux-realism/?width=1024&height=1024&prompt=${encodeURIComponent(query)}`;
-    
+    const response = await axios.post(
+      "https://api-inference.huggingface.co/models/XLabs-AI/flux-RealismLora",
+      { "inputs": queryText },
+      {
+        headers: {
+          Authorization: "Bearer " + process.env.HF_APIKEY,
+          "Content-Type": "application/json"
+        },
+      }
+    );
+    console.log(response.data);
+
+    const imageUrl = response.data.image_url;
+
     const isSent = await api.sendMessage({
       attachment: {
         type: 'image',
         payload: {
-          url: url,
+          url: imageUrl,
           is_reusable: true
         }
       }
     }, event.sender.id);
-    
-    if(!isSent) {
+
+    if (!isSent) {
       api.sendMessage({ text: "Failed to generate your image!" })
     }
 
