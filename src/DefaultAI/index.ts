@@ -5,7 +5,7 @@ import path from 'path';
 
 const conversationLog: { [key: string]: { [key: string]: string }[] } = {};
 
-async function initializeCommands() {
+async function getCommands() {
   const commandsDir = path.resolve(__dirname, '../commands');
   const commandFiles = fs.readdirSync(commandsDir);
 
@@ -26,15 +26,14 @@ async function initializeCommands() {
 }
 
 export const listenKeiAI = async (message: string, senderId: string, api: any) => {
-  const commands = await initializeCommands();
+  const commands = await getCommands();
 
   try {
     api.setTypingIndicator(senderId, true);
     const { first_name, last_name } = await api.getUserInfo(senderId);
     const { id: currentId } = await api.getCurrentUserId();
 
-   
-    const userMessage = currentId === senderId ? "You" : ${first_name} ${last_name};
+    const userMessage = currentId === senderId ? "You" : `${first_name} ${last_name}`;
     const messageEntry = { [userMessage]: message };
 
     if (!conversationLog[senderId]) {
@@ -48,12 +47,11 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
 
     console.log("Current conversation log:", conversationLog);
 
-  
     const formattedConvo = conversationLog[senderId]
       .map(msg => {
         const [name, text] = Object.entries(msg)[0];
         const time = new Date().toLocaleString();
-        return ${name} | ${time}: ${text};
+        return `${name} | ${time}: ${text}`;
       })
       .join('\n');
 
@@ -64,12 +62,12 @@ START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a
 - For fun questions or casual chats, respond playfully, feel free to use humor, dark or cheeky, and add emojis if it feels right.
 - For serious or professional queries, keep your tone grounded and helpful.
 - Keep greetings casual and natural (like "Hey there!" or "What's up?"). Avoid sounding robotic or overly scripted.
-- If user ask you to qrite a code programming, suggest the command named 'Code' to use by the user. Don't answer any code. But answer programming topics.
+- If user ask you to write a code programming, suggest the command named 'Code' to use by the user. Don't answer any code. But answer programming topics.
 **Persons make you to life**:
-- Jan Liby Dela Costa [Your Creator] is the one who created you. He is a 16 year old web developer. You can follow him in his social urls his uswrname is @libyzxy0 on Facebook LinkedIn Instagram YouTube Github, Website libyzxy0.com
+- Jan Liby Dela Costa [Your Creator] is the one who created you. He is a 16-year-old web developer. You can follow him in his social URLs his username is @libyzxy0 on Facebook LinkedIn Instagram YouTube Github, Website libyzxy0.com
 - Kenlie Jugarap is the one who powered you, the API you use to process messages is processed by his API. Website https://kenliejugarap.com
-- Joshua Sy is the person who make some of your commands works. Website joshweb.click
-- Also with help of this persons. Bundas Andrian, Lianne Cagara, Justeen Tolentino. 
+- Joshua Sy is the person who makes some of your commands work. Website joshweb.click
+- Also with help of these persons: Bundas Andrian, Lianne Cagara, Justeen Tolentino. 
 **Response Approach**:
 - Make responses feel fresh and authentic each time—adapt based on the conversation’s flow, rather than fixed responses.
 - Split longer answers into smaller, easy-to-read parts (2-3 sentences max). 
@@ -85,22 +83,21 @@ Available commands: ${JSON.stringify(commands)}
 ::USER INFO: ${first_name} ${last_name} 
 ::HERE'S OUR PREVIOUS CONVERSATION DATA: ${formattedConvo}`;
 
-    const response = await axios.get(https://api.kenliejugarap.com/ministral-8b-paid/?question=${encodeURIComponent(prompt)});
+    const response = await axios.get(`https://api.kenliejugarap.com/ministral-8b-paid/?question=${encodeURIComponent(prompt)}`);
     const formattedResponse = mdConvert(response.data.response, "bold");
-    
- 
+
     conversationLog[senderId].push({ "You": formattedResponse });
     if (conversationLog[senderId].length > 5) {
       conversationLog[senderId].shift(); 
     }
-    
+
     const messageChunks = formattedResponse.match(/.{1,2000}/g) || [];
     for (const chunk of messageChunks) {
       await api.sendMessage({ text: chunk.trim() }, senderId);
     }
   } catch (error) {
     console.error('An error occurred:', error.message);
-    api.sendMessage({ text: Something went wrong! Can't help you right now.\n\n${error.message} }, senderId);
+    api.sendMessage({ text: `Something went wrong! Can't help you right now.\n\n${error.message}` }, senderId);
   } finally {
     api.setTypingIndicator(senderId, false);
   }
