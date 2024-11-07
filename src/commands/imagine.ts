@@ -35,13 +35,11 @@ export async function execute({
         headers: {
           Authorization: "Bearer " + process.env.HF_APIKEY,
           "Content-Type": "application/json"
-        },
-        responseType: 'arraybuffer' 
+        }
       }
     );
 
-    const imageBuffer = Buffer.from(response.data, 'binary');
-    const imageUrl = `data:image/jpeg;base64,${imageBuffer.toString('base64')}`; // Assuming JPEG format
+    const imageUrl = `data:image/jpeg;base64,${response.data.toString('base64')}`;
 
     const isSent = await api.sendMessage({
       attachment: {
