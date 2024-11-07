@@ -36,11 +36,12 @@ export async function execute({
           Authorization: "Bearer " + process.env.HF_APIKEY,
           "Content-Type": "application/json"
         },
+        responseType: 'arraybuffer' 
       }
     );
-    console.log(response.data);
 
-    const imageUrl = response.data.image_url;
+    const imageBuffer = Buffer.from(response.data, 'binary');
+    const imageUrl = `data:image/jpeg;base64,${imageBuffer.toString('base64')}`; // Assuming JPEG format
 
     const isSent = await api.sendMessage({
       attachment: {
@@ -53,7 +54,7 @@ export async function execute({
     }, event.sender.id);
 
     if (!isSent) {
-      api.sendMessage({ text: "Failed to generate your image!" })
+      api.sendMessage({ text: "Failed to generate your image!" });
     }
 
   } catch (error) {
