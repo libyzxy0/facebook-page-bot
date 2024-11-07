@@ -2,7 +2,7 @@ import { fontText } from '@/utils/fonts'
 
 export const config = {
   name: 'Imagine',
-  description: 'Imagine any image.',
+  description: 'Imagine any image, powered by flux.',
   usage: 'Imagine [query]',
   category: 'General',
   creator: 'libyzxy0'
@@ -28,7 +28,7 @@ export async function execute({
 
     const query = args.join(" ");
     
-    const url = `https://joshweb.click/api/flux?prompt=${encodeURIComponent(query)}&model=4`;
+    const url = `https://api.kenliejugarap.com/flux-realism/?width=1024&height=1024&prompt=${encodeURIComponent(query)}`;
     
     const isSent = await api.sendMessage({
       attachment: {
@@ -41,7 +41,7 @@ export async function execute({
     }, event.sender.id);
     
     if(!isSent) {
-      api.sendMessage({ text: "Failed to generate your image" })
+      api.sendMessage({ text: "Failed to generate your image!" })
     }
 
   } catch (error) {
