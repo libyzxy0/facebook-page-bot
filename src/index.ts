@@ -6,9 +6,6 @@ import express, {
 import Bootstrap from "@/bootstrap";
 import errorHandler from "@/middlewares/error-handler";
 import notFound from "@/middlewares/not-found";
-import {
-  initializeRoutes
-} from "@/routes";
 import cors from "cors";
 import { PAGE_ACCESS_TOKEN, VERIFY_TOKEN } from '@/credentials'
 import { handlePostback } from '@/handlers/postback.handler'
@@ -65,6 +62,36 @@ app.post("/webhook", (req: Request, res: Response) => {
           }
         });
       });
+
+      res.status(200).send('EVENT_RECEIVED');
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      error: "Something went wrong"
+    })
+  }
+})
+
+app.get("/railway/webhook", async (req: Request, res: Response) => {
+  try {
+    console.log("Query:", req.query);
+    res.status(200).send('EVENT_RECEIVED');
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      error: "Something went wrong"
+    })
+  }
+})
+
+app.post("/railway/webhook", (req: Request, res: Response) => {
+  try {
+    const body = req.body;
+
+     console.log("Body:", body);
 
       res.status(200).send('EVENT_RECEIVED');
     } else {
