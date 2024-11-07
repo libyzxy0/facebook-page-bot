@@ -84,8 +84,17 @@ app.post("/webhook", (req: Request, res: Response) => {
 app.post("/railway/webhook", (req: Request, res: Response) => {
   try {
      botAPI.sendMessage({
-       text: `${fontText("Deployment Alert!!", "bold")}\n\n${JSON.stringify(req.body, null, 2) + '\n'}`
-     }, "8232207860235773")
+       text: `${fontText("🚀 Deployment Alert!", "bold")}\n\n` +
+             `${fontText("Project Name", "sansSerifItalic")}: ${req.body.project.name}\n` +
+             `${fontText("Description", "sansSerifItalic")}: ${req.body.project.description}\n` +
+             `${fontText("Deployed By", "sansSerifItalic")}: ${req.body.deployment.creator.name}\n` +
+             `${fontText("Branch", "sansSerifItalic")}: ${req.body.deployment.meta.branch}\n` +
+             `${fontText("Commit", "sansSerifItalic")}: ${req.body.deployment.meta.commitMessage}\n` +
+             `${fontText("Status", "sansSerifItalic")}: ${req.body.status}\n` +
+             `${fontText("Environment", "sansSerifItalic")}: ${req.body.environment.name}\n` +
+             `${fontText("Timestamp", "sansSerifItalic")}: ${req.body.timestamp}\n`
+     }, "8232207860235773");
+
 
      res.status(200).send('EVENT_RECEIVED');
   } catch (error) {
