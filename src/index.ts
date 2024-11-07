@@ -93,10 +93,7 @@ app.post("/railway/webhook", (req: Request, res: Response) => {
 
      console.log("Body:", body);
 
-      res.status(200).send('EVENT_RECEIVED');
-    } else {
-      res.sendStatus(404);
-    }
+     res.status(200).send('EVENT_RECEIVED');
   } catch (error) {
     console.log(error)
     res.status(500).json({
