@@ -10,6 +10,12 @@ import cors from "cors";
 import { PAGE_ACCESS_TOKEN, VERIFY_TOKEN } from '@/credentials'
 import { handlePostback } from '@/handlers/postback.handler'
 import { handleMessage } from '@/handlers/message.handler'
+import { fontText } from '@/utils/fonts'
+import {
+  API
+} from '@/Api'
+
+const botAPI = new API();
 
 const app: Application = express();
 
@@ -75,23 +81,11 @@ app.post("/webhook", (req: Request, res: Response) => {
   }
 })
 
-app.get("/railway/webhook", async (req: Request, res: Response) => {
-  try {
-    console.log("Query:", req.query);
-    res.status(200).send('EVENT_RECEIVED');
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      error: "Something went wrong"
-    })
-  }
-})
-
 app.post("/railway/webhook", (req: Request, res: Response) => {
   try {
-    const body = req.body;
-
-     console.log("Body:", body);
+     botAPI.sendMessage({
+       text: `${fontText("Deployment Alert!!", "bold")}\n\n${JSON.stringify(req.body, null, 2) + '\n'}`
+     }, "8232207860235773")
 
      res.status(200).send('EVENT_RECEIVED');
   } catch (error) {
