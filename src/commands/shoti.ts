@@ -14,7 +14,7 @@ export async function execute({
 }) {
   try {
     api.setTypingIndicator(event.sender.id, true);
-    const response = await axios.get('https://shoti-server-production.up.railway.app/api/v1/request-f');
+    const response = await axios.get('https://shoti-srv-production.up.railway.app/api/get');
 
     const url = response.data.data.url;
     const username = response.data.data.user.username;
