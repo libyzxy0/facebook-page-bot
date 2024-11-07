@@ -85,14 +85,14 @@ app.post("/railway/webhook", (req: Request, res: Response) => {
   try {
      botAPI.sendMessage({
        text: `${fontText("🚀 Deployment Alert!", "bold")}\n\n` +
-             `${fontText("Project Name", "sansSerifItalic")}: ${req.body.project.name}\n` +
-             `${fontText("Description", "sansSerifItalic")}: ${req.body.project.description}\n` +
-             `${fontText("Deployed By", "sansSerifItalic")}: ${req.body.deployment.creator.name}\n` +
-             `${fontText("Branch", "sansSerifItalic")}: ${req.body.deployment.meta.branch}\n` +
-             `${fontText("Commit", "sansSerifItalic")}: ${req.body.deployment.meta.commitMessage}\n` +
-             `${fontText("Status", "sansSerifItalic")}: ${req.body.status}\n` +
-             `${fontText("Environment", "sansSerifItalic")}: ${req.body.environment.name}\n` +
-             `${fontText("Timestamp", "sansSerifItalic")}: ${req.body.timestamp}\n`
+             `${fontText("Project Name", "boldItalic")}: ${req.body.project.name}\n` +
+             `${fontText("Description", "boldItalic")}: ${req.body.project.description}\n` +
+             `${fontText("Deployed By", "boldItalic")}: ${req.body.deployment.creator.name}\n` +
+             `${fontText("Branch", "boldItalic")}: ${req.body.deployment.meta.branch}\n` +
+             `${fontText("Commit", "boldItalic")}: ${req.body.deployment.meta.commitMessage}\n` +
+             `${fontText("Status", "boldItalic")}: ${req.body.status}\n` +
+             `${fontText("Environment", "boldItalic")}: ${req.body.environment.name}\n` +
+             `${fontText("Happened At", "boldItalic")}: ${new Date(req.body.timestamp).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: 'numeric', hour12: true, month: 'short', day: 'numeric', year: 'numeric' })}\n`
      }, "8232207860235773");
 
 
