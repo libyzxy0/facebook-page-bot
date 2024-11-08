@@ -73,6 +73,8 @@ START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a
 
 Available commands: ${JSON.stringify(commands)}
 --END
+
+::USER INFO: ${first_name} ${last_name} \n::HERE'S OUR PREVIOUS CONVERSATION DATA: ${formattedConvo}
     `;
 
     const formattedConvo = conversationLog[senderId]
@@ -83,14 +85,12 @@ Available commands: ${JSON.stringify(commands)}
       })
     .join('\n');
 
-    const prompt = `USER_INPUT: ${message} \n::USER INFO: ${first_name} ${last_name} \n::HERE'S OUR PREVIOUS CONVERSATION DATA: ${formattedConvo}`;
-
     try {
       const response = await client.chatCompletion({
-        model: "NousResearch/Hermes-3-Llama-3.1-8B",
+        model: "meta-llama/Llama-3.1-70B-Instruct",
         messages: [
           { "role": "system", "content": keiInstructions },
-          { "role": "user", "content": prompt }
+          { "role": "user", "content": message }
         ],
          max_tokens: 500,
          stop: ["\n"]
