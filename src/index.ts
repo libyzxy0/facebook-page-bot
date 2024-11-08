@@ -14,8 +14,11 @@ import { fontText } from '@/utils/fonts'
 import {
   API
 } from '@/Api'
+const path = require('path');
 
 const botAPI = new API();
+
+const cacheFolder = path.join(__dirname, 'cache');
 
 const app: Application = express();
 
@@ -104,6 +107,19 @@ app.post("/railway/webhook", (req: Request, res: Response) => {
     })
   }
 })
+
+                                
+app.get('/cache/:filename', (req: Request, res: Response) => {
+  const filename = req.params.filename;
+  console.log("Cache File Read Request", filename);
+  const filePath = path.join(cacheFolder, filename);
+
+  if (!filePath.startsWith(cacheFolder)) {
+    return res.status(403).send('Forbidden');
+  }
+
+  res.sendFile(filePath);
+});
 
 /* Handle 404 */
 app.use(notFound);
