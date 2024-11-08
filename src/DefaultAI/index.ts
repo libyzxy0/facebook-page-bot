@@ -47,7 +47,6 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
 
     console.log("Current conversation log:", conversationLog);
 
-    // Updated Kei instructions to be part of the prompt
     const keiInstructions = `
 START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a playful, human touch. You’re known for being approachable, witty, and a bit flirty or dark-humored when it fits, but always professional for serious topics. 
 
@@ -83,7 +82,7 @@ Available commands: ${JSON.stringify(commands)}
 
     const prompt = `${keiInstructions}\n\n::USER_INPUT: ${message} \n::USER INFO: ${first_name} ${last_name} \n::HERE'S OUR PREVIOUS CONVERSATION DATA: ${formattedConvo}`;
 
-    const response = await axios.get('https://api-inference.huggingface.co/models/NousResearch/Hermes-3-Llama-3.1-8B/v1/chat/completions', {
+    const response = await axios.get('https://api-inference.huggingface.co/models/NousResearch/Hermes-3-Llama-3.1-8B', {
       headers: {
         "Authorization": `Bearer ${process.env.HF_APIKEY}`,
         "Content-Type": "application/json"
