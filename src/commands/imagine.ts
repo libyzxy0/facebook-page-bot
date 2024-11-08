@@ -1,4 +1,8 @@
 import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+
+const baseURL = `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` || "http://localhost:3000";
 
 export const config = {
   name: 'Imagine',
@@ -39,13 +43,15 @@ export async function execute({
       }
     );
 
-    const imageUrl = `data:image/jpeg;base64,${response.data.toString('base64')}`;
-    console.log(imageUrl);
+    const filename = Math.floor(Math.random() * 90000000) + 10000000;
+    const imagePath = path.join(__dirname, '../cache', `${filename}.jpg`);
+    fs.writeFileSync(imagePath, response.data);
+
     const isSent = await api.sendMessage({
       attachment: {
         type: 'image',
         payload: {
-          url: imageUrl,
+          url: `${baseURL}/cache/${filename}.jpg`,
           is_reusable: true
         }
       }
@@ -62,5 +68,6 @@ export async function execute({
     }, event.sender.id);
   } finally {
     api.setTypingIndicator(event.sender.id, false);
+    fs.unlinkSync(imagePath);
   }
 }
