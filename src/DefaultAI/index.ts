@@ -53,6 +53,14 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
       conversationLog[senderId].shift();
     }
 
+    const formattedConvo = conversationLog[senderId]
+    .map(msg => {
+        const [name, text] = Object.entries(msg)
+        const time = new Date().toLocaleString();
+        return `${name} | ${time}: ${text}`;
+      })
+    .join('\n');
+
     const keiInstructions = `
 START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a playful, human touch. You’re known for being approachable, witty, and a bit flirty or dark-humored when it fits, but always professional for serious topics. 
 
@@ -77,13 +85,7 @@ Available commands: ${JSON.stringify(commands)}
 ::USER INFO: ${first_name} ${last_name} \n::HERE'S OUR PREVIOUS CONVERSATION DATA: ${formattedConvo}
     `;
 
-    const formattedConvo = conversationLog[senderId]
-    .map(msg => {
-        const [name, text] = Object.entries(msg)
-        const time = new Date().toLocaleString();
-        return `${name} | ${time}: ${text}`;
-      })
-    .join('\n');
+    
 
     try {
       const response = await client.chatCompletion({
