@@ -98,7 +98,9 @@ Available commands: ${JSON.stringify(commands)}
       }
     });
 
-    const formattedResponse = mdConvert(response.data.complete_reason, "bold");
+    console.log(response.data);
+
+    const formattedResponse = mdConvert(JSON.stringify(response.data), "bold");
 
     conversationLog[senderId].push({ "You": formattedResponse });
     if (conversationLog[senderId].length > 5) {
