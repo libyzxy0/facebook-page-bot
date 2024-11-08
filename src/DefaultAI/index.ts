@@ -75,7 +75,7 @@ Available commands: ${JSON.stringify(commands)}
 
     const formattedConvo = conversationLog[senderId]
      .map(msg => {
-        const [name, text] = Object.entries(msg) <sup> </sup>;
+        const [name, text] = Object.entries(msg)
         const time = new Date().toLocaleString();
         return `${name} | ${time}: ${text}`;
       })
