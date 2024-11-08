@@ -89,7 +89,7 @@ Available commands: ${JSON.stringify(commands)}
 
     try {
       const response = await client.chatCompletion({
-        model: "meta-llama/Llama-3.1-70B-Instruct",
+        model: "Qwen/Qwen2.5-72B-Instruct",
         messages: [
           { "role": "system", "content": keiInstructions },
           { "role": "user", "content": message }
