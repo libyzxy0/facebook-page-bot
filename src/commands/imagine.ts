@@ -40,7 +40,7 @@ export async function execute({
     );
 
     const imageUrl = `data:image/jpeg;base64,${response.data.toString('base64')}`;
-
+    console.log(imageUrl);
     const isSent = await api.sendMessage({
       attachment: {
         type: 'image',
