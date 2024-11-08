@@ -96,9 +96,9 @@ Available commands: ${JSON.stringify(commands)}
          stop: ["\n"]
       });
 
-      console.log(response.data.choices[0].message)
+      console.log(response.choices[0].message)
 
-      let out = JSON.stringify(response.data.choices[0].message);
+      let out = JSON.stringify(response.choices[0].message);
 
       const messageChunks = out.match(/.{1,2000}/g) || [];
       for (const chunk of messageChunks) {
