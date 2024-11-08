@@ -103,7 +103,7 @@ Available commands: ${JSON.stringify(commands)}
 
       const messageChunks = out.match(/.{1,2000}/g) || [];
       for (const chunk of messageChunks) {
-        await api.sendMessage({ text: chunk.trim() }, senderId);
+        await api.sendMessage({ text: mdConvert(chunk.trim()) }, senderId);
       }
 
       conversationLog[senderId].push({ "You": out });
