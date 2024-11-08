@@ -26,7 +26,11 @@ export async function handleMessage(event) {
       });
     } catch (error) {
       if (error.code == "ERR_MODULE_NOT_FOUND") {
-        listenKeiAI(event.message.text, event.sender.id, apiFunctions, event);
+        try {
+          listenKeiAI(event.message.text, event.sender.id, apiFunctions, event);
+        } catch (err) {
+          console.log("AI Handler Error:", err);
+        }
       } else {
         console.log(error)
         apiFunctions.sendMessage( {
