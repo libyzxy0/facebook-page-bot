@@ -9,6 +9,8 @@ if (!hfApiKey) {
   throw new Error('Missing HF_APIKEY environment variable');
 }
 
+let conversationLog: { [key: string]: { [key: string]: string }[] } = {};
+
 const client = new HfInference(hfApiKey);
 
 async function getCommands() {
