@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const config = {
   name: 'Imagine',
-  description: 'Imagine any image, powered by flux.',
+  description: 'Generate any image using text, powered by flux.',
   usage: 'Imagine [query]',
   category: 'General',
   creator: 'libyzxy0'
