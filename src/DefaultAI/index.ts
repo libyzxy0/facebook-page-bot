@@ -95,7 +95,6 @@ Available commands: ${JSON.stringify(commands)}
           { "role": "user", "content": message }
         ],
          max_tokens: 500,
-         stop: ["\n"]
       });
 
       console.log(response.choices[0].message)
