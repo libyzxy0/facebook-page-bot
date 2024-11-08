@@ -33,7 +33,7 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
     const { first_name, last_name } = await api.getUserInfo(senderId);
     const { id: currentId } = await api.getCurrentUserId();
 
-    const userMessage = currentId === senderId ? "You" : `${first_name} ${last_name}`;
+    const userMessage = currentId === senderId? "You" : `${first_name} ${last_name}`;
     const messageEntry = { [userMessage]: message };
 
     if (!conversationLog[senderId]) {
@@ -47,15 +47,8 @@ export const listenKeiAI = async (message: string, senderId: string, api: any) =
 
     console.log("Current conversation log:", conversationLog);
 
-    const formattedConvo = conversationLog[senderId]
-      .map(msg => {
-        const [name, text] = Object.entries(msg)[0];
-        const time = new Date().toLocaleString();
-        return `${name} | ${time}: ${text}`;
-      })
-      .join('\n');
-
-    const prompt = `
+    // Updated Kei instructions to be part of the prompt
+    const keiInstructions = `
 START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a playful, human touch. You’re known for being approachable, witty, and a bit flirty or dark-humored when it fits, but always professional for serious topics. 
 
 **Tone and Style**:
@@ -77,13 +70,36 @@ START-- You are Kei Sy, a friendly, down-to-earth, and engaging assistant with a
 - Use previous messages to make responses feel connected. For example, if the user previously asked about something, subtly acknowledge it to make them feel heard.
 
 Available commands: ${JSON.stringify(commands)}
+--END
+    `;
 
---END | ::USER_INPUT: ${message} 
-::USER INFO: ${first_name} ${last_name} 
-::HERE'S OUR PREVIOUS CONVERSATION DATA: ${formattedConvo}`;
+    const formattedConvo = conversationLog[senderId]
+     .map(msg => {
+        const [name, text] = Object.entries(msg) <sup> </sup>;
+        const time = new Date().toLocaleString();
+        return `${name} | ${time}: ${text}`;
+      })
+     .join('\n');
 
-    const response = await axios.get(`https://api.kenliejugarap.com/ministral-8b-paid/?question=${encodeURIComponent(prompt)}`);
-    const formattedResponse = mdConvert(response.data.response, "bold");
+    const prompt = `${keiInstructions}\n\n::USER_INPUT: ${message} \n::USER INFO: ${first_name} ${last_name} \n::HERE'S OUR PREVIOUS CONVERSATION DATA: ${formattedConvo}`;
+
+    const response = await axios.get('https://api-inference.huggingface.co/models/NousResearch/Hermes-3-Llama-3.1-8B/v1/chat/completions', {
+      headers: {
+        "Authorization": `Bearer ${process.env.HF_APIKEY}`,
+        "Content-Type": "application/json"
+      },
+      params: {
+        "model": "NousResearch/Hermes-3-Llama-3.1-8B",
+        "messages": [
+          { "role": "system", "content": keiInstructions },
+          { "role": "user", "content": prompt }
+        ],
+        "max_tokens": 500,
+        "stream": true
+      }
+    });
+
+    const formattedResponse = mdConvert(response.data.complete_reason, "bold");
 
     conversationLog[senderId].push({ "You": formattedResponse });
     if (conversationLog[senderId].length > 5) {
