@@ -173,10 +173,17 @@
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.1.1.tgz#b9da6a878a371829a0502c9b6c1c143ef6663f4d"
   integrity sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==
 
-"@google/generative-ai@^0.21.0":
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/@google/generative-ai/-/generative-ai-0.21.0.tgz#a5011aab9e6082e706937b26ef23445933fa0d15"
-  integrity sha512-7XhUbtnlkSEZK15kN3t+tzIMxsbKm/dSkKBFalj+20NvPKe1kBY7mR2P7vuijEn+f06z5+A8bVGKO0v39cr6Wg==
+"@huggingface/inference@^2.8.1":
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/@huggingface/inference/-/inference-2.8.1.tgz#e119a7746faf5ce40ebf37ec97afd51286c27ecb"
+  integrity sha512-EfsNtY9OR6JCNaUa5bZu2mrs48iqeTz0Gutwf+fU0Kypx33xFQB4DKMhp8u4Ee6qVbLbNWvTHuWwlppLQl4p4Q==
+  dependencies:
+    "@huggingface/tasks" "^0.12.9"
+
+"@huggingface/tasks@^0.12.9":
+  version "0.12.30"
+  resolved "https://registry.yarnpkg.com/@huggingface/tasks/-/tasks-0.12.30.tgz#ed1295c12cd85fc1ff4621485703be92083148b0"
+  integrity sha512-A1ITdxbEzx9L8wKR8pF7swyrTLxWNDFIGDLUWInxvks2ruQ8PLRBZe8r0EcjC3CDdtlj9jV1V4cgV35K/iy3GQ==
 
 "@humanwhocodes/module-importer@^1.0.1":
   version "1.0.1"
