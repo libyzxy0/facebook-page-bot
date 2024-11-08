@@ -67,7 +67,7 @@ export class API {
     })
     return response.data;
     } catch (error) {
-      throw new Error("Failed to get user info, Error: " + error.message)
+      return { first_name: "N/A", last_name: "N/A" }
     }
   }
   
