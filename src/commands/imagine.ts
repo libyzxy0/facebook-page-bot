@@ -26,6 +26,9 @@ export async function execute({
     );
   }
 
+  const filename = Math.floor(Math.random() * 90000000) + 10000000;
+  const imagePath = path.join(__dirname, '../cache', `${filename}.jpg`);
+
   try {
     args.shift();
     api.setTypingIndicator(event.sender.id, true);
@@ -43,8 +46,6 @@ export async function execute({
       }
     );
 
-    const filename = Math.floor(Math.random() * 90000000) + 10000000;
-    const imagePath = path.join(__dirname, '../cache', `${filename}.jpg`);
     fs.writeFileSync(imagePath, response.data);
 
     const isSent = await api.sendMessage({
