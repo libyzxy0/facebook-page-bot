@@ -96,6 +96,8 @@ Available commands: ${JSON.stringify(commands)}
          stop: ["\n"]
       });
 
+      console.log(response)
+
       let out = response.choices[0].delta.content;
 
       const messageChunks = out.match(/.{1,2000}/g) || [];
