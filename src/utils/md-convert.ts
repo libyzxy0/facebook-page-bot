@@ -1,9 +1,12 @@
 import { fontText } from '@/utils/fonts';
 
 export function mdConvert(md: string) {
+  const bulletPointRegex = /^-\s*/gm;
   const boldRegex = /\*\*(.*?)\*\*/g;
   const headingRegex = /^(#{1,6})\s*(.*?)$/gm;
   const codeRegex = /`(.*?)`/g;
+
+  md = md.replace(bulletPointRegex, '❒ ');
 
   md = md.replace(boldRegex, (match, p1) => {
     return fontText(p1, 'bold');
