@@ -1,12 +1,19 @@
-import axios from 'axios';
+import { HfInference } from "@huggingface/inference";
 
 export const config = {
   name: 'Ask',
-  description: 'AI Command uses the joshweb.click API gpt4 turbo.',
+  description: 'Ask anything uses NousResearch/Hermes-3-Llama-3.1-8B model from huggingface.co',
   usage: 'Ask [question]',
   category: 'Education',
   creator: 'libyzxy0'
 };
+
+const hfApiKey = process.env.HF_APIKEY;
+if (!hfApiKey) {
+  throw new Error('Missing HF_APIKEY environment variable');
+}
+
+const client = new HfInference(hfApiKey);
 
 export async function execute({
   api, event
@@ -24,15 +31,22 @@ export async function execute({
     api.setTypingIndicator(event.sender.id, true);
     args.shift();
       
-    const response = await axios.get(`https://joshweb.click/gpt4?prompt=${args.join(" ")}&uid=${event.sender.id}`);
-
+    const response = await client.chatCompletion({
+      model: "NousResearch/Hermes-3-Llama-3.1-8B",
+      messages: [
+        { "role": "system", "content": "You are not a person, you are a AI command named Ask under Kei Sy chatbot. AI model NousResearch/Hermes-3-Llama-3.1-8B from huggingface.co" },
+        { "role": "user", "content": args.join(" ") }
+      ],
+      max_tokens: 500,
+    });
+    
     await api.sendMessage({
-      text: `${response.data.gpt4}`
+      text: response.choices[0].message.content
     }, event.sender.id);
   } catch (error) {
     console.error(`Error message: ${error.message}`);
     await api.sendMessage({
-      text: "Error, please contact the developer."
+      text: "Something went wrong."
     }, event.sender.id);
   } finally {
     api.setTypingIndicator(event.sender.id, false);
