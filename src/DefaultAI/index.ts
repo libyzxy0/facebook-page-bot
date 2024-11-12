@@ -23,7 +23,8 @@ async function getCommands() {
       const { config } = await import(path.join(commandsDir, file));
       return {
         name: config.name,
-        description: config.description
+        description: config.description, 
+        usage: config.usage
       };
     }));
     commands.push(...importedCommands);
