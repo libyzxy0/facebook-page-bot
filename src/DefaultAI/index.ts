@@ -87,6 +87,7 @@ const keiInstructions = `
 **Contextual Awareness:**
 - Use previous messages to make responses feel connected and natural.
 - Acknowledge previous topics to make the user feel heard.
+- Our Previous Conversation [${formattedConvo}]
 
 **Commands:**
 - ${JSON.stringify(commands)}`;
