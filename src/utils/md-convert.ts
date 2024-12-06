@@ -1,5 +1,11 @@
 import { fontText } from '@/utils/fonts';
 
+/**
+ * Converts markdown text to a formatted string.
+ *
+ * @param {string} md - The markdown text to convert.
+ * @returns {string} The formatted string.
+ */
 export function mdConvert(md: string) {
   const bulletPointRegex = /^-\s*/gm;
   const boldRegex = /\*\*(.*?)\*\*/g;
@@ -17,8 +23,10 @@ export function mdConvert(md: string) {
   });
 
   md = md.replace(codeRegex, (match, p1) => {
-    return fontText(p1, 'sansSerifItalic');
+    return fontText(p1,'sansSerifItalic');
   });
+
+  md = md.replace(/:$/, '⤵');
 
   return md;
 }
