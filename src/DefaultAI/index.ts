@@ -9,6 +9,23 @@ if (!hfApiKey) {
   throw new Error('Missing HF_APIKEY environment variable');
 }
 
+function splitByChunks(content, chunkSize) {
+  const regex = /```[\s\S]*?```|[\s\S]*?(?=```|$)/g;
+  const matches = content.match(regex) || [];
+  const chunks = [];
+
+  for (const match of matches) {
+    if (match.startsWith("```")) {
+      chunks.push(match);
+    } else {
+      const nonCodeChunks = match.match(new RegExp(`.{1,${chunkSize}}`, "g")) || [];
+      chunks.push(...nonCodeChunks);
+    }
+  }
+
+  return chunks;
+}
+
 let conversationLog: { [key: string]: { [key: string]: string }[] } = {};
 
 const client = new HfInference(hfApiKey);
@@ -107,7 +124,10 @@ const keiInstructions = `
 
       let out = response.choices[0].message.content;
 
-      const messageChunks = out.match(/.{1,2000}/g) || [];
+
+
+      const messageChunks = splitByChunks(out, 2000);
+
       for (const chunk of messageChunks) {
         await api.sendMessage({ text: mdConvert(chunk.trim()) }, senderId);
       }
