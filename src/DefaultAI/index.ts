@@ -9,8 +9,8 @@ if (!hfApiKey) {
   throw new Error('Missing HF_APIKEY environment variable');
 }
 
-function splitByChunks(content, chunkSize) {
-  const regex = /```[\s\S]*?```|[\s\S]*?(?=```|$)/g;
+function splitMarkdown(content, chunkSize) {
+  const regex = /```[\s\S]*?```|[\s\S]+?(?=```|$)/g;
   const matches = content.match(regex) || [];
   const chunks = [];
 
@@ -126,7 +126,7 @@ const keiInstructions = `
 
 
 
-      const messageChunks = splitByChunks(out, 2000);
+      const messageChunks = splitMarkdown(out, 2000);
 
       for (const chunk of messageChunks) {
         await api.sendMessage({ text: mdConvert(chunk.trim()) }, senderId);
