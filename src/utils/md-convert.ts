@@ -26,7 +26,7 @@ export function mdConvert(md: string) {
     return fontText(p1,'sansSerifItalic');
   });
 
-  md = md.replace(/:$/, '↯');
+  md = md.replace(/:$/, '⤵');
 
   return md;
 }
