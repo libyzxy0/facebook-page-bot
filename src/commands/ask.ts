@@ -1,4 +1,5 @@
 import { HfInference } from "@huggingface/inference";
+import { mdConvert } from '@/utils/md-convert';
 
 export const config = {
   name: 'Ask',
@@ -41,7 +42,7 @@ export async function execute({
     });
     
     await api.sendMessage({
-      text: response.choices[0].message.content
+      text: mdConvert(response.choices[0].message.content)
     }, event.sender.id);
   } catch (error) {
     console.error(`Error message: ${error.message}`);
